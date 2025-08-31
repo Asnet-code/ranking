@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PLAYER
+  ADMIN
+}
+
+model User {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  image        String
+  role         Role       @default(PLAYER)
+  deathCount   Int        @default(0)
+  profileNotes Comment[]  @relation("CommentsOnProfile")
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Comment {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  body          String
+
+  targetUserId  String   @db.ObjectId
+  targetUser    User     @relation("CommentsOnProfile", fields: [targetUserId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([targetUserId, createdAt])
+}
