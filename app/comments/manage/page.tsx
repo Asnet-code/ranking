@@ -1,8 +1,10 @@
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import prisma from "@/lib/prismadb";
 import Image from "next/image";
 import DeleteCommentButton from "./DeleteCommentButton";
-
-export const runtime = "nodejs";
 
 export default async function ManageCommentsPage() {
   const comments = await prisma.comment.findMany({
