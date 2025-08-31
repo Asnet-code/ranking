@@ -1,15 +1,14 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prismadb";
 
 export const runtime = "nodejs";
 
-// DELETE /api/comments/:commentId
 export async function DELETE(
-  _req: Request,
-  { params }: { params: { commentId: string } }
+  _req: NextRequest,
+  context: { params: Promise<{ commentId: string }> }
 ) {
   try {
-    const { commentId } = params;
+    const { commentId } = await context.params;
 
     const existing = await prisma.comment.findUnique({
       where: { id: commentId },
